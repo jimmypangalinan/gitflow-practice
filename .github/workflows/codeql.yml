@@ -23,7 +23,7 @@ jobs:
       matrix:
         include:
           - language: javascript-typescript
-            build-mode: manual
+            build-mode: none
 
     steps:
     - name: Checkout repository
@@ -32,19 +32,17 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'   # sesuaikan versi Node dengan project kamu
+        node-version: '18'   # sesuaikan versi Node kamu
+
+    - name: Install dependencies
+      run: |
+        npm ci || npm install
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
-
-    # 🧱 Step build manual pakai npm
-    - if: matrix.build-mode == 'manual'
-      run: |
-        npm ci || npm install
-        npm run build || echo "No build script found, skipping build"
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
